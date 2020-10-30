@@ -1,0 +1,14 @@
+# Flag 1 - flag{that_was_easy}
+One way to find the flag is to simple grep for "flag" on the apk.
+
+Another way is to open up the apk in a tool like jadx and look at the decompiled code. In the MainActivity class, we see a CheckFlagOne function that compares the user input to a static string resource.  When we look at that string resource, we see the flag.
+
+
+# Flag 2 - flag{not_bad_at_all}
+This time the user input is being compared to a hidden TextView's text value.  If we look at what's contained there, we see that it contains base64 text.  Looking at the CheckFlagTwo function, it does some sort of encoding on our input and compares it to the static value.  First, it performs ROT13, and then it base64 encodes the result.  If the user input matches the TextView's text value, then we have the right flag.
+
+# Flag 3 - flag{you_fixed_the_internet}
+When the user clicks the button, MainActivity calls an asynctask named HttpRequestor and passes a URL to the doInBackground function.  The URL is not a real URL, so the function fails to make an http request to it.
+There are two ways to solve this challenge.
+First, we can use a rooted device and modify the /etc/hosts file so that the domain points to a real IP address with a web server.  This will require mounting the device with a writeable /system partition in order to modify the hosts file.
+Second, the intended solution is to intercept the call to doInBackground with Frida and modify the parameter that is passed to a valid url, such as www.google.com.  The Frida script to solve this part is included in this directory.
